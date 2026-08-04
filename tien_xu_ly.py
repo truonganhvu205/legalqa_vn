@@ -1,12 +1,17 @@
 from loader import loader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_huggingface import HuggingFaceEndpointEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_community.vectorstores.utils import DistanceStrategy
+import os
+from dotenv import load_dotenv
 
 def tien_xu_ly():
-    # CHUNKING
+    load_dotenv()
+    os.environ["HF_TOKEN"] = os.getenv("uit_ds_c_2026")
     docs = loader()
+
+    # CHUNKING
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=1000,
         chunk_overlap=200,
@@ -16,8 +21,9 @@ def tien_xu_ly():
     texts = text_splitter.split_documents(docs)
 
     # EMBEDDINGS
-    embeddings = HuggingFaceEmbeddings(
-        model_name="BAAI/bge-m3"
+    embeddings = HuggingFaceEndpointEmbeddings(
+        model="BAAI/bge-m3",
+        huggingfacehub_api_token=os.environ["HF_TOKEN"],
     )
 
     # VECTOR DB
