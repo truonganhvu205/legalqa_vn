@@ -4,11 +4,8 @@ from dotenv import load_dotenv
 
 def embeddings():
     load_dotenv()
-    os.environ["HF_TOKEN"] = os.getenv("uit_ds_c_2026")
 
-    embeddings = HuggingFaceEndpointEmbeddings(
+    return HuggingFaceEndpointEmbeddings(
         model="BAAI/bge-m3",
-        huggingfacehub_api_token=os.environ["HF_TOKEN"],
+        huggingfacehub_api_token=os.getenv("uit_ds_c_2026"),
     )
-    
-    return embeddings

@@ -1,7 +1,7 @@
-from tien_xu_ly import tien_xu_ly
+from retriever import retriever as get_retriever
+from huggingface_hub import InferenceClient
 import os
 from dotenv import load_dotenv
-from huggingface_hub import InferenceClient
 
 SYSTEM_PROMPT = (
     'You are a strict, citation-focused assistant for a private knowledge base.\n'
@@ -15,21 +15,24 @@ SYSTEM_PROMPT = (
 
 def load_client():
     load_dotenv()
-    os.environ["HF_TOKEN"] = os.getenv("uit_ds_c_2026")
-    return InferenceClient(api_key=os.environ["HF_TOKEN"])
+    return InferenceClient(api_key=os.getenv("uit_ds_c_2026"))
 
 def generate(client, question, context):
     completion = client.chat.completions.create(
         model="Qwen/Qwen2.5-3B-Instruct:featherless-ai",
         messages=[
             {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": f"Context:\n{context}\n\nQuestion: {question}"},
+            {"role": "user", "content": (
+                f"Context:\n{context}\n\n"
+                f"Question: {question}"
+            )},
         ],
     )
+
     return completion.choices[0].message.content
 
 def llm():
-    retriever = tien_xu_ly()
+    r = get_retriever()
     client = load_client()
 
     while True:
@@ -37,6 +40,6 @@ def llm():
         if question == 'exit':
             break
 
-        context = "\n\n".join(d.page_content for d in retriever.invoke(question))
+        context = "\n\n".join(d.page_content for d in r.invoke(question))
         response = generate(client, question, context)
         print(response)

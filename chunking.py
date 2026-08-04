@@ -9,5 +9,4 @@ def chunking():
         length_function=len,
     )
     
-    texts = text_splitter.split_documents(docs)
-    return texts
+    return text_splitter.split_documents(docs)
