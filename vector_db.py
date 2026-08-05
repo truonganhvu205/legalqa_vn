@@ -16,6 +16,6 @@ def vector_db():
         embedding=emb,
         distance_strategy=DistanceStrategy.COSINE,
     )
-    
+
     db.save_local(INDEX_PATH)
     return db

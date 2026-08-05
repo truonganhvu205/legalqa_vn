@@ -8,5 +8,5 @@ def chunking():
         chunk_overlap=200,
         length_function=len,
     )
-    
+
     return text_splitter.split_documents(docs)
