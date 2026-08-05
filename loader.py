@@ -21,3 +21,6 @@ def loader():
         )
 
     return docs
+
+if __name__ == '__main__':
+    print(loader())

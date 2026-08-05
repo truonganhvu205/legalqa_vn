@@ -1,12 +1,12 @@
-from langchain_community.vectorstores import FAISS
-from langchain_community.vectorstores.utils import DistanceStrategy
+import os
 from chunking import chunking
 from embeddings import embeddings
-import os
+from langchain_community.vectorstores import FAISS
+from langchain_community.vectorstores.utils import DistanceStrategy
 
 INDEX_PATH = "faiss_index"
 
-def vector_db():
+def vectorstore():
     emb = embeddings()
     if os.path.exists(INDEX_PATH):
         return FAISS.load_local(INDEX_PATH, emb, allow_dangerous_deserialization=True)

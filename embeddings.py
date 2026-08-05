@@ -1,14 +1,14 @@
-# from langchain_huggingface import HuggingFaceEndpointEmbeddings
-from langchain_huggingface import HuggingFaceEmbeddings
-# import os
-# from dotenv import load_dotenv
+from chunking import chunking
+from FlagEmbedding import BGEM3FlagModel
 
 def embeddings():
-    # load_dotenv()
+    model = BGEM3FlagModel('BAAI/bge-m3',  use_fp16=True)
+    sentences = [doc.page_content for doc in chunking()]
 
-    # return HuggingFaceEndpointEmbeddings(
-    #     model="BAAI/bge-m3",
-    #     huggingfacehub_api_token=os.getenv("uit_ds_c_2026"),
-    # )
+    return model.encode(sentences,
+                        batch_size=12,
+                        max_length=8192,
+                        )['dense_vecs']
 
-    return HuggingFaceEmbeddings(model_name="BAAI/bge-m3")
+if __name__ == '__main__':
+    print(embeddings())
