@@ -32,7 +32,7 @@ def generate(client, question, context):
     return completion.choices[0].message.content
 
 def llm():
-    r = get_retriever()
+    retriever = get_retriever()
     client = load_client()
 
     while True:
@@ -40,6 +40,6 @@ def llm():
         if question == 'exit':
             break
 
-        context = "\n\n".join(d.page_content for d in r.invoke(question))
+        context = "\n\n".join(doc.page_content for doc in retriever.invoke(question))
         response = generate(client, question, context)
         print(response)
