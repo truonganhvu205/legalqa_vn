@@ -13,7 +13,7 @@ def load_existing_submission(path="submission.json"):
             return json.load(f)
     return {}
 
-def make_submission(input_path="./datasets/warmup.json", output_path="submission.json"):
+def make_submission(input_path="./datasets/warmup.json", output_path="./datasets/submission.json"):
     questions = load_questions(input_path)
     submission = load_existing_submission(output_path)
 
