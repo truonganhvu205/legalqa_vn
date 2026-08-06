@@ -2,14 +2,17 @@ from chunking import chunking
 from FlagEmbedding import BGEM3FlagModel
 
 def embeddings():
-    docs = chunking()
+    chunks = chunking()
     model = BGEM3FlagModel('BAAI/bge-m3',  use_fp16=True)
-    sentences = [doc.page_content for doc in docs]
+    sentences = [chunk.page_content for chunk in chunks]
 
-    return model.encode(sentences,
-                        batch_size=12,
-                        max_length=8192,
-                        )['dense_vecs']
+    vectors = model.encode(
+        sentences,
+        batch_size=12,
+        max_length=8192,
+        )['dense_vecs']
+
+    return chunks, vectors, model
 
 if __name__ == '__main__':
     print(embeddings())
