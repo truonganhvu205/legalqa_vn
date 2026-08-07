@@ -8,8 +8,11 @@ SYSTEM_PROMPT = (
     "this sentence and nothing else: \"I don't know based on the provided documents.\"\n"
     '3. Do NOT use outside knowledge, guessing, or web information.\n'
     '4. If applicable, cite sources as (source:page) using the metadata.\n'
-    '5. ALWAYS answer in Vietnamese, regardless of the language of these instructions, '
-    'EXCEPT for the exact fallback sentence in rule 2, which must remain in English.\n\n'
+    '5. Answer ONLY in Vietnamese. Do not include any English text, English preamble, '
+    'or English framing sentences (e.g. do NOT write "The answer is", "Based on the context", '
+    '"The provided text states" or similar). Do NOT repeat or restate the question.\n'
+    '6. Output ONLY the final Vietnamese answer text directly — no introduction, '
+    'no meta-commentary, no explanation of what you are doing.\n\n'
 )
 
 def load_model():
