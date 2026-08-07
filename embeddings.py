@@ -15,4 +15,4 @@ def embeddings():
     return chunks, vectors, model
 
 if __name__ == '__main__':
-    print(embeddings())
+    print(embeddings()[1])
