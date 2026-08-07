@@ -16,7 +16,7 @@ SYSTEM_PROMPT = (
 )
 
 def load_model():
-    model_name = "Qwen/Qwen2.5-1.5B-Instruct"
+    model_name = "Qwen/Qwen2.5-3B-Instruct"
     model = AutoModelForCausalLM.from_pretrained(
         model_name, torch_dtype="auto", device_map="auto"
     )
