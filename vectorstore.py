@@ -5,8 +5,9 @@ import numpy as np
 import os
 import pickle
 
-INDEX_PATH = 'faiss_index.bin'
-CHUNKS_PATH = 'chunks.pkl'
+INDEX_DIR = 'faiss_index'
+INDEX_PATH = os.path.join(INDEX_DIR, 'index.bin')
+CHUNKS_PATH = os.path.join(INDEX_DIR, 'chunks.pkl')
 
 def vectorstore():
     if os.path.exists(INDEX_PATH) and os.path.exists(CHUNKS_PATH):
@@ -24,6 +25,7 @@ def vectorstore():
     index = faiss.IndexFlatIP(1024)
     index.add(vectors)
 
+    os.makedirs(INDEX_DIR, exist_ok=True)
     faiss.write_index(index, INDEX_PATH)
     with open(CHUNKS_PATH, 'wb') as f:
         pickle.dump(chunks, f)
