@@ -12,6 +12,8 @@ sentence-transformers>=5.0
 
 faiss-cpu
 
-transformers
+transformers>=4.55
 torch
+accelerate
+bitsandbytes>=0.46.1
 huggingface_hub

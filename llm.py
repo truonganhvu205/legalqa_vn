@@ -1,4 +1,5 @@
-from transformers import AutoModelForCausalLM, AutoTokenizer
+import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 
 SYSTEM_PROMPT = (
     'You are a strict, citation-focused assistant for a private knowledge base.\n'
@@ -17,11 +18,28 @@ SYSTEM_PROMPT = (
 
 def load_model():
     model_name = "Qwen/Qwen2.5-3B-Instruct"
-    model = AutoModelForCausalLM.from_pretrained(
-        model_name, torch_dtype="auto", device_map="auto"
+    bnb_config = BitsAndBytesConfig(
+        load_in_4bit=True,
+        bnb_4bit_quant_type="nf4",
+        bnb_4bit_compute_dtype=torch.bfloat16,
+        bnb_4bit_use_double_quant=True,
     )
 
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model = AutoModelForCausalLM.from_pretrained(
+        model_name,
+        quantization_config=bnb_config,
+        device_map="auto",
+        trust_remote_code=True,
+    )
+
+    tokenizer = AutoTokenizer.from_pretrained(
+        model_name,
+        trust_remote_code=True,
+    )
+
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+
     return model, tokenizer
 
 def generate(model, tokenizer, question, context):
@@ -35,9 +53,20 @@ def generate(model, tokenizer, question, context):
     text = tokenizer.apply_chat_template(
         messages, tokenize=False, add_generation_prompt=True
     )
-    model_inputs = tokenizer([text], return_tensors="pt").to(model.device)
+    # model_inputs = tokenizer([text], return_tensors="pt").to(model.device)
+    model_inputs = tokenizer(text, return_tensors="pt")
+    model_inputs = {
+        k: v.to(next(model.parameters()).device)
+        for k, v in model_inputs.items()
+    }
 
-    generated_ids = model.generate(**model_inputs, max_new_tokens=512)
+    generated_ids = model.generate(
+        **model_inputs,
+        max_new_tokens=512,
+        temperature=0.1,
+        do_sample=False,
+        pad_token_id=tokenizer.eos_token_id,
+    )
     generated_ids = [
         output_ids[len(input_ids):]
         for input_ids, output_ids in zip(model_inputs.input_ids, generated_ids)
