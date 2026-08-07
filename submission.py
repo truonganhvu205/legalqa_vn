@@ -24,12 +24,11 @@ def make_submission(input_path="./datasets/warmup.json", output_path="./datasets
         if qid in submission:
             continue
 
-        # question = item["question"].strip().lower()
-        question = r(item["question"].strip().lower())
+        question = item["question"].strip().lower()
+        docs = r(question)
 
         try:
-            # context = "\n\n".join(doc.page_content for doc in r.invoke(question))
-            context = "\n\n".join(doc.page_content for doc in question)
+            context = "\n\n".join(d.page_content for d in docs)
             answer = generate(model, tokenizer, question, context)
         except Exception as e:
             print(f"Lỗi ở {qid}: {e}")

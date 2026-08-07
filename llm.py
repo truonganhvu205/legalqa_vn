@@ -1,14 +1,15 @@
-# from retriever import retriever as get_retriever
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 SYSTEM_PROMPT = (
     'You are a strict, citation-focused assistant for a private knowledge base.\n'
     'RULES:\n'
     '1. Use ONLY the provided context to answer.\n'
-    '2. If the answer is not clearly contained in the context, say: '
-    "'I don't know based on the provided documents.'\n"
+    '2. If the answer is not clearly contained in the context, respond with EXACTLY '
+    "this sentence and nothing else: \"I don't know based on the provided documents.\"\n"
     '3. Do NOT use outside knowledge, guessing, or web information.\n'
-    '4. If applicable, cite sources as (source:page) using the metadata.\n\n'
+    '4. If applicable, cite sources as (source:page) using the metadata.\n'
+    '5. ALWAYS answer in Vietnamese, regardless of the language of these instructions, '
+    'EXCEPT for the exact fallback sentence in rule 2, which must remain in English.\n\n'
 )
 
 def load_model():
