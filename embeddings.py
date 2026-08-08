@@ -13,6 +13,3 @@ def embeddings():
         )['dense_vecs']
 
     return chunks, vectors, model
-
-if __name__ == '__main__':
-    print(embeddings()[1])

@@ -10,6 +10,3 @@ def chunking():
     )
 
     return text_splitter.split_documents(docs)
-
-if __name__ == '__main__':
-    print(chunking()[0].page_content)

@@ -8,7 +8,7 @@ def retriever():
     def retrieve(question, k=5, score_threshold=0.2):
         query = model.encode(
             [question],
-            max_length=8192,
+            max_length=512,
             )['dense_vecs']
         query = np.array(query).astype('float32')
         faiss.normalize_L2(query)
@@ -19,12 +19,28 @@ def retriever():
         for score, idx in zip(scores[0], indices[0]):
             if idx == -1 or score < score_threshold:
                 continue
-
             results.append(chunks[idx])
         return results
-    return retrieve
 
-if __name__ == '__main__':
-    r = retriever()
-    docs = r('Phó chủ tịch công đoàn có được quyền ký thỏa ước lao động tập thể không?')
-    print(len(docs))
+    def retrieve_batch(questions, k=5, score_threshold=0.2, batch_size=32):
+        queries = model.encode(
+            questions,
+            batch_size=batch_size,
+            max_length=512,
+            )['dense_vecs']
+        queries = np.array(queries).astype('float32')
+        faiss.normalize_L2(queries)
+
+        scores, indices = index.search(queries, k)
+        all_results = []
+
+        for i in range(len(questions)):
+            results = []
+            for score, idx in zip(scores[i], indices[i]):
+                if idx == -1 or score < score_threshold:
+                    continue
+                results.append(chunks[idx])
+            all_results.append(results)
+        return all_results
+
+    return retrieve, retrieve_batch

@@ -1,4 +1,4 @@
 __pycache__
 venv
 datasets
-faiss_index/
+faiss_index
