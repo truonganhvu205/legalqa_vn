@@ -3,7 +3,7 @@ import os
 from retriever import retriever as get_retriever
 from llm import load_model, generate
 
-def load_questions(path="./datasets/warmup.json"):
+def load_questions(path="./datasets/public_test/train.json"):
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
 
@@ -13,15 +13,17 @@ def load_existing_submission(path="submission.json"):
             return json.load(f)
     return {}
 
-def make_submission(input_path="./datasets/warmup.json", output_path="./datasets/submission.json"):
+def make_submission(
+    input_path="./datasets/public_test/train.json",
+    output_path="./datasets/submission.json"):
     questions = load_questions(input_path)
     submission = load_existing_submission(output_path)
 
     r = get_retriever()
     model, tokenizer = load_model()
 
-    for qid, item in questions.items():
-        if qid in submission:
+    for id, item in questions.items():
+        if id in submission:
             continue
 
         question = item["question"].strip().lower()
@@ -31,11 +33,11 @@ def make_submission(input_path="./datasets/warmup.json", output_path="./datasets
             context = "\n\n".join(d.page_content for d in docs)
             answer = generate(model, tokenizer, question, context)
         except Exception as e:
-            print(f"Lỗi ở {qid}: {e}")
+            print(f"Lỗi ở {id}: {e}")
             continue
 
-        submission[qid] = {"answer": answer}
-        print(f"Đã xử lý {qid}")
+        submission[id] = {"answer": answer}
+        print(f"Đã xử lý {id}")
 
         with open(output_path, "w", encoding="utf-8") as f:
             json.dump(submission, f, ensure_ascii=False, indent=4)

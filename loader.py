@@ -2,7 +2,7 @@ import json
 from langchain_core.documents import Document
 
 def loader():
-    with open("./datasets/warmup.json", "r", encoding="utf-8") as f:
+    with open("./datasets/public_test/train.json", "r", encoding="utf-8") as f:
         data = json.load(f)
 
     docs = []

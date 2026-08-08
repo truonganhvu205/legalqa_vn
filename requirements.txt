@@ -15,5 +15,5 @@ faiss-cpu
 transformers>=4.55
 torch
 accelerate
-bitsandbytes>=0.46.1
+# bitsandbytes>=0.46.1
 huggingface_hub

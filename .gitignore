@@ -1,5 +1,4 @@
 __pycache__
 venv
-.env
-datasets/
+datasets
 faiss_index/
